@@ -3,3 +3,8 @@ langchain_anthropic
 tavily-python
 langchain_community
 langchain_openai
+langchain 
+langchain_mistralai 
+langchain-experimental 
+langchainhub 
+langchain-community 

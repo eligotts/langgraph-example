@@ -1,14 +1,60 @@
-# LangGraph Cloud Example
+# Test-Time Compute Simulation
 
-![](static/agent_ui.png)
+Welcome to the Test-Time Compute Simulation Tool! This LangGraph workflow allows you to interact with AI agents to answer complex questions, giving you freedom to alter the specifics of your test-time compute algorithm. This project was inspired by this research paper: https://arxiv.org/pdf/2408.03314.
 
-This is an example agent to deploy with LangGraph Cloud.
+For the command line tool version of this project, see here: https://github.com/eligotts/test-time-compute
 
-> [!TIP]
-> If you would rather use `pyproject.toml` for managing dependencies in your LangGraph Cloud project, please check out [this repository](https://github.com/langchain-ai/langgraph-example-pyproject).
+For a Google Colab version of this project, see here: https://colab.research.google.com/drive/11exuBZEPr0ITRM12G5V7r_u9mcWuBwzE?usp=sharing
 
-[LangGraph](https://github.com/langchain-ai/langgraph) is a library for building stateful, multi-actor applications with LLMs. The main use cases for LangGraph are conversational agents, and long-running, multi-step LLM applications or any LLM application that would benefit from built-in support for persistent checkpoints, cycles and human-in-the-loop interactions (ie. LLM and human collaboration).
+## Theory
+This application is a simplification of the procedure described in the paper linked above. Here is a high level overview:
 
-LangGraph shortens the time-to-market for developers using LangGraph, with a one-liner command to start a production-ready HTTP microservice for your LangGraph applications, with built-in persistence. This lets you focus on the logic of your LangGraph graph, and leave the scaling and API design to us. The API is inspired by the OpenAI assistants API, and is designed to fit in alongside your existing services.
+- **Initial Response Generation**: first, we generate a certain amount of responses to the question.
+- **Comments and Scores**: Each response generated receives comments on its accuracy and logical structure. It also receives a numeric grade out of 10 on the quality of the response.
+- **Difficulty Assessment**: after the initial responses have been commented on and scored, we assess how difficult the question.
+- **Best-of-N vs. Revisions vs. Beam Search**: given the difficulty, we need to distribute our compute resources. We can generate more individual threads (best-of-N), or generate fewer individual threads, and revise more. After each revision step, we can also choose to discard our worst responses (beam search). See `create_difficulty_agent` in `my_agent/upper_agents.py` to edit this compute resource distribution.
+- **Final Summary**: Once we decide we are done, or are out of compute, we generate a final, coherent answer to the user.
 
-In order to deploy this agent to LangGraph Cloud you will want to first fork this repo. After that, you can follow the instructions [here](https://langchain-ai.github.io/langgraph/cloud/) to deploy to LangGraph Cloud.
+
+## Installation
+
+### Prerequisites
+
+- **Python**: Ensure you have Python 3.7 or higher installed. [Download Python](https://www.python.org/downloads/)
+
+- **LangGraph Studio**: Download LangGraph Studio to run this workflow. Will need Docker as well.
+
+### Steps
+
+1. **Clone the Repository**:
+
+   ```bash
+   git clone https://github.com/eligotts/test-time-compute.git
+   ```
+
+2. **Navigate to the Project Directory**:
+
+   ```bash
+   cd test-time-compute
+   ```
+
+4. **Add your API keys**:
+
+   Create a `.env` file in the root directory, and enter your API keys
+
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   ANTHROPIC_API_KEY=your_anthropic_api_key
+   MISTRAL_API_KEY=your_mistral_api_key
+   TAVILY_API_KEY=your_tavily_api_key
+   ```
+
+5. **Load the flow in LangGraph Studio**: 
+
+    Open LangGraph Studio, and select project directory!
+
+6. **Input your question**:
+
+    Enter your question into the `question` field, and hit `Submit`. Watch the reasoning steps go...
+
+### Please edit and add stuff if you're interested! 
